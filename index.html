@@ -109,23 +109,54 @@
   <label>Shared Bill (yes/no):</label>
   <input type="text" id="sharedBill"><br><br>
 
-  <!-- Button 1: Generate & also save to Google Sheets -->
+  <!-- Button 1: Generate & Save (combined) -->
   <button onclick="generateAndSave()">Generate & Save</button>
-  
-  <!-- Button 2: Save to Google Sheets only (no generation) -->
+
+  <!-- Button 2: Save to Excel Sheet only (no new generation) -->
   <button onclick="submitData()">Save to Excel Sheet</button>
 
-  <!-- Optional: Copy the generated HTML -->
+  <!-- Copy the generated HTML -->
   <button onclick="copyToClipboard()">Copy</button>
 
-  <!-- Where the generated HTML appears -->
+  <!-- Display the final HTML here -->
   <pre id="output"></pre>
 
   <script>
-    // Your Web App URL from Google Apps Script
+    /*
+      IMPORTANT: Your server-side Apps Script must return CORS headers, e.g.:
+        Access-Control-Allow-Origin: *
+        Access-Control-Allow-Methods: POST, GET, OPTIONS
+        Access-Control-Allow-Headers: Content-Type
+      Example snippet in Apps Script:
+
+      function doPost(e) {
+        var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+        var data = JSON.parse(e.postData.contents);
+        sheet.appendRow([
+          new Date(),
+          JSON.stringify(data.userInput),
+          data.generatedCode
+        ]);
+        return createCorsResponse("Success");
+      }
+
+      function doOptions(e) {
+        return createCorsResponse(""); // handle preflight
+      }
+
+      function createCorsResponse(content) {
+        return ContentService.createTextOutput(content)
+          .setMimeType(ContentService.MimeType.TEXT)
+          .setHeader("Access-Control-Allow-Origin", "*")
+          .setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
+          .setHeader("Access-Control-Allow-Headers", "Content-Type");
+      }
+    */
+
+    // Your Google Apps Script Web App URL
     const webAppUrl = "https://script.google.com/macros/s/AKfycbxdaDPvwSKi_NYwJzS5HTOatU3RXyrK9CwlXKt0gI31IFpFn0k35xesBvsLg950by-Kog/exec";
 
-    // 1) Generate final HTML code (does NOT automatically save to Sheets)
+    // Builds the HTML with placeholders replaced by user input
     function generateCode() {
       const generatedCode =
 `<div>
@@ -186,17 +217,15 @@ ${document.getElementById("eventDescription").value}<br /><br />
 <p>&nbsp;</p>
 <p>&nbsp;</p>`;
 
-      // Show the code in <pre>
+      // Display the generated HTML in the <pre> block
       document.getElementById("output").textContent = generatedCode;
       return generatedCode;
     }
 
-    // 2) Gather all fields into a single object (plus the generated code)
+    // Build the JSON payload: user input and the generated code from <pre>
     function buildPayload() {
-      const generatedHTML = document.getElementById("output").textContent; 
-      // If code is not yet generated, we can call generateCode() first. 
-      // Or just rely on what's in <pre>.
-      
+      const generatedHTML = document.getElementById("output").textContent;
+
       const userInputData = {
         companyName:      document.getElementById("companyName").value,
         artistCountry:    document.getElementById("artistCountry").value,
@@ -233,21 +262,22 @@ ${document.getElementById("eventDescription").value}<br /><br />
         sharedBill:       document.getElementById("sharedBill").value
       };
 
-      const payload = {
+      return {
         userInput: userInputData,
         generatedCode: generatedHTML
       };
-      return payload;
     }
 
-    // 3) Actually submit to your Google Sheets via doPost(e)
+    // Send data to Google Sheets (CORS must be enabled on the Apps Script side)
     function submitData() {
       const payload = buildPayload();
 
       fetch(webAppUrl, {
         method: "POST",
+        // Key addition for CORS:
+        mode: "cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       })
       .then(response => response.text())
       .then(data => {
@@ -260,19 +290,17 @@ ${document.getElementById("eventDescription").value}<br /><br />
       });
     }
 
-    // 4) A combined function: Generate code first, then submit to Sheets
+    // Generate code then immediately submit (combined action)
     function generateAndSave() {
-      // 1) Generate code
       generateCode(); 
-      // 2) Then immediately save to sheet
       submitData();
     }
 
-    // 5) Copy the generated code from <pre> to clipboard
+    // Copy the generated code (from <pre>) to the clipboard
     function copyToClipboard() {
       const textToCopy = document.getElementById("output").textContent;
       navigator.clipboard.writeText(textToCopy)
-        .then(() => { alert("Copied to clipboard!"); })
+        .then(() => alert("Copied to clipboard!"))
         .catch(err => console.error("Failed to copy: ", err));
     }
   </script>
