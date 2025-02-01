@@ -114,7 +114,7 @@
     <pre id="output"></pre>
 
     <script>
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbyHQw40OKBHyMoaC5_H8bHYxXQl6NwH7pXB7ygegPeoIObb5tIigwXqJ5emLJe72iNQ/exec";
+        const webAppUrl = "https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_WEB_APP_URL/exec";
 
         function generateCode() {
             var generatedCode = `<div>
@@ -128,10 +128,6 @@
 <strong>Duration</strong>: ${document.getElementById("eventDuration").value} (${document.getElementById("intermission").value})<br />
 <strong>Venue</strong>: ${document.getElementById("venue").value}, <br />
 <strong>Location</strong>: ${document.getElementById("venueLocation").value}</p>
-<h3>Production Details</h3>
-${document.getElementById("eventDescription").value}<br /><br />
-<strong>Company History<br /></strong>${document.getElementById("companyHistory").value}<br />
-<p>Extra Information Section:<br />${document.getElementById("sharedBill").value}</p>
 </div>`;
 
             document.getElementById("output").textContent = generatedCode;
@@ -139,8 +135,7 @@ ${document.getElementById("eventDescription").value}<br /><br />
 
         function submitData() {
             var userInput = {};
-            var inputs = document.querySelectorAll("input");
-            inputs.forEach(input => {
+            document.querySelectorAll("input").forEach(input => {
                 userInput[input.id] = input.value;
             });
 
@@ -148,13 +143,15 @@ ${document.getElementById("eventDescription").value}<br /><br />
 
             fetch(webAppUrl, {
                 method: "POST",
-                mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userInput)
-            }).then(response => {
-                console.log("Data submitted successfully!");
-            }).catch(error => {
-                console.error("Error submitting data: ", error);
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Data submitted successfully:", data);
+            })
+            .catch(error => {
+                console.error("Error submitting data:", error);
             });
         }
 
