@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source Code Generator</title>
+</head>
+<body>
+
+    <h2>Fill in the details:</h2>
+
+    <label>Company Name:</label>
+    <input type="text" id="companyName"><br>
+
+    <label>Country of Artist Origin:</label>
+    <input type="text" id="artistCountry"><br>
+
+    <label>Event Title:</label>
+    <input type="text" id="eventTitle"><br>
+
+    <label>Year Art Created:</label>
+    <input type="text" id="yearCreated"><br>
+
+    <label>Premiere Type (if any):</label>
+    <input type="text" id="premiereType"><br>
+
+    <label>Video Link URL:</label>
+    <input type="text" id="videoLink"><br>
+
+    <label>Date & Time of Event:</label>
+    <input type="text" id="eventDateTime"><br>
+
+    <label>Duration:</label>
+    <input type="text" id="eventDuration"><br>
+
+    <label>Intermission (true/false):</label>
+    <input type="text" id="intermission"><br>
+
+    <label>Venue:</label>
+    <input type="text" id="venue"><br>
+
+    <label>Venue Location:</label>
+    <input type="text" id="venueLocation"><br>
+
+    <label>Tkkl Ticket Link:</label>
+    <input type="text" id="ticketLink"><br>
+
+    <label>Festival Pass Link:</label>
+    <input type="text" id="festivalPassLink"><br>
+
+    <label>Artist Fund Credit:</label>
+    <input type="text" id="artistFundCredit"><br>
+
+    <label>Artist 1 Skill Title:</label>
+    <input type="text" id="artist1Skill"><br>
+
+    <label>Artist 1 Name:</label>
+    <input type="text" id="artist1Name"><br>
+
+    <label>Artist 2 Skill Title:</label>
+    <input type="text" id="artist2Skill"><br>
+
+    <label>Artist 2 Name:</label>
+    <input type="text" id="artist2Name"><br>
+
+    <label>Artist 3 Skill Title:</label>
+    <input type="text" id="artist3Skill"><br>
+
+    <label>Artist 3 Name:</label>
+    <input type="text" id="artist3Name"><br>
+
+    <label>Artist 4 Skill Title:</label>
+    <input type="text" id="artist4Skill"><br>
+
+    <label>Artist 4 Name:</label>
+    <input type="text" id="artist4Name"><br>
+
+    <label>Artist Website:</label>
+    <input type="text" id="artistWebsite"><br>
+
+    <label>Artist Facebook Page:</label>
+    <input type="text" id="artistFacebook"><br>
+
+    <label>Instagram Link:</label>
+    <input type="text" id="artistInstagram"><br>
+
+    <label>Artist Twitter Page:</label>
+    <input type="text" id="artistTwitter"><br>
+
+    <label>Event Description:</label>
+    <input type="text" id="eventDescription"><br>
+
+    <label>Company History:</label>
+    <input type="text" id="companyHistory"><br>
+
+    <label>Artist 1 Description:</label>
+    <input type="text" id="artist1Desc"><br>
+
+    <label>Artist 2 Description:</label>
+    <input type="text" id="artist2Desc"><br>
+
+    <label>Artist 3 Description:</label>
+    <input type="text" id="artist3Desc"><br>
+
+    <label>Artist 4 Description:</label>
+    <input type="text" id="artist4Desc"><br>
+
+    <label>Shared Bill (yes/no):</label>
+    <input type="text" id="sharedBill"><br>
+
+    <button onclick="generateCode()">Generate</button>
+    <button onclick="copyToClipboard()">Copy</button>
+
+    <pre id="output"></pre>
+
+    <script>
+        function generateCode() {
+            var generatedCode = `<div>
+<div class="artists-left">
+<h1><strong>${document.getElementById("companyName").value}</strong></h1>
+<h3>(${document.getElementById("artistCountry").value})</h3>
+<h1><em>${document.getElementById("eventTitle").value}<br /></em></h1>
+<h3>(${document.getElementById("yearCreated").value}, ${document.getElementById("premiereType").value})</h3>
+<p><br />${document.getElementById("videoLink").value}</p>
+<p><strong>Date(s) &amp; Time(s)</strong>: ${document.getElementById("eventDateTime").value}<br />
+<strong>Duration</strong>: ${document.getElementById("eventDuration").value} (${document.getElementById("intermission").value})<br />
+<strong>Venue</strong>: ${document.getElementById("venue").value}, <br />
+<strong>Location</strong>: ${document.getElementById("venueLocation").value}</p>
+<h3>Ticket Information</h3>
+<p><strong>Early Bird: $20, Advance: $25, Door: $28<br /></strong>For the best deals, see multiple shows with a discount Festival Pass.<br /><strong><a class="submit-button" rel="noreferrer" href="${document.getElementById("ticketLink").value}">TICKETS</a></strong><strong><a class="submit-button" rel="noopener noreferrer" href="${document.getElementById("festivalPassLink").value}">FESTIVAL PASS</a></strong></p>
+<p><br /><strong>Funding Credits:</strong> ${document.getElementById("artistFundCredit").value}</p>
+<h3>Artist Information</h3>
+<p class="p1"><strong>${document.getElementById("artist1Skill").value}:</strong> ${document.getElementById("artist1Name").value}<br />
+<strong>${document.getElementById("artist2Skill").value}:</strong> ${document.getElementById("artist2Name").value}<br />
+<strong>${document.getElementById("artist3Skill").value}:</strong> ${document.getElementById("artist3Name").value}<br />
+<strong>${document.getElementById("artist4Skill").value}:</strong> ${document.getElementById("artist4Name").value}</p>
+<h3>Production Details</h3>
+${document.getElementById("eventDescription").value}<br /><br />
+<strong>Company History<br /></strong>${document.getElementById("companyHistory").value}<br />
+<h3>Artist Biographies</h3>
+<strong>${document.getElementById("artist1Name").value}</strong><br />${document.getElementById("artist1Desc").value}<br /><br />
+<strong>${document.getElementById("artist2Name").value}</strong><br />${document.getElementById("artist2Desc").value}<br /><br />
+<strong>${document.getElementById("artist3Name").value}</strong><br />${document.getElementById("artist3Desc").value}<br /><br />
+<strong>${document.getElementById("artist4Name").value}</strong><br />${document.getElementById("artist4Desc").value}<br /><br />
+<p>Extra Information Section:<br />${document.getElementById("sharedBill").value}</p>
+</div>`;
+
+            document.getElementById("output").textContent = generatedCode;
+        }
+
+        function copyToClipboard() {
+            navigator.clipboard.writeText(document.getElementById("output").textContent);
+        }
+    </script>
+
+</body>
+</html>
