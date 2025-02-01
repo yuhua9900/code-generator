@@ -114,7 +114,7 @@
     <pre id="output"></pre>
 
     <script>
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbz343gL4c-GbKT8Afq38-rIP4h0nYwhh2jxnOFalHch-rANr70w1-UPVrANJ6bC2IiZ/exec";  // Replace with your actual Web App URL
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbz343gL4c-GbKT8Afq38-rIP4h0nYwhh2jxnOFalHch-rANr70w1-UPVrANJ6bC2IiZ/exec";
 
         function generateCode() {
             var generatedCode = `<div>
@@ -128,31 +128,40 @@
 <strong>Duration</strong>: ${document.getElementById("eventDuration").value} (${document.getElementById("intermission").value})<br />
 <strong>Venue</strong>: ${document.getElementById("venue").value}, <br />
 <strong>Location</strong>: ${document.getElementById("venueLocation").value}</p>
+<h3>Production Details</h3>
+${document.getElementById("eventDescription").value}<br /><br />
+<strong>Company History<br /></strong>${document.getElementById("companyHistory").value}<br />
+<p>Extra Information Section:<br />${document.getElementById("sharedBill").value}</p>
 </div>`;
 
             document.getElementById("output").textContent = generatedCode;
         }
 
         function submitData() {
-            var userInput = {};
-            document.querySelectorAll("input").forEach(input => {
-                userInput[input.id] = input.value;
-            });
-
-            userInput["generatedCode"] = document.getElementById("output").textContent;
+            var userInput = {
+                companyName: document.getElementById("companyName").value,
+                artistCountry: document.getElementById("artistCountry").value,
+                eventTitle: document.getElementById("eventTitle").value,
+                yearCreated: document.getElementById("yearCreated").value,
+                premiereType: document.getElementById("premiereType").value,
+                videoLink: document.getElementById("videoLink").value,
+                eventDateTime: document.getElementById("eventDateTime").value,
+                eventDuration: document.getElementById("eventDuration").value,
+                intermission: document.getElementById("intermission").value,
+                venue: document.getElementById("venue").value,
+                venueLocation: document.getElementById("venueLocation").value,
+                generatedCode: document.getElementById("output").textContent
+            };
 
             fetch(webAppUrl, {
                 method: "POST",
-                mode: "cors",  // Enable CORS
+                mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userInput)
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log("Data submitted successfully:", data);
-            })
-            .catch(error => {
-                console.error("Error submitting data:", error);
+            }).then(response => {
+                console.log("Data submitted successfully!");
+            }).catch(error => {
+                console.error("Error submitting data: ", error);
             });
         }
 
