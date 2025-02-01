@@ -8,6 +8,7 @@
 <body>
 
   <h2>Fill in the details:</h2>
+
   <!-- Your input fields -->
   <label>Company Name:</label>
   <input type="text" id="companyName"><br>
@@ -108,21 +109,25 @@
   <label>Shared Bill (yes/no):</label>
   <input type="text" id="sharedBill"><br><br>
 
-  <!-- Generate final HTML and also submit to Google Sheets -->
-  <button onclick="generateCode(); submitData();">Generate & Save</button>
-  <!-- Copy the generated HTML directly from the <pre> -->
+  <!-- Button 1: Generate & also save to Google Sheets -->
+  <button onclick="generateAndSave()">Generate & Save</button>
+  
+  <!-- Button 2: Save to Google Sheets only (no generation) -->
+  <button onclick="submitData()">Save to Excel Sheet</button>
+
+  <!-- Optional: Copy the generated HTML -->
   <button onclick="copyToClipboard()">Copy</button>
 
-  <!-- Display the final HTML code here -->
+  <!-- Where the generated HTML appears -->
   <pre id="output"></pre>
 
   <script>
-    // 1. Your Google Apps Script Web App URL:
+    // Your Web App URL from Google Apps Script
     const webAppUrl = "https://script.google.com/macros/s/AKfycbxdaDPvwSKi_NYwJzS5HTOatU3RXyrK9CwlXKt0gI31IFpFn0k35xesBvsLg950by-Kog/exec";
 
-    // 2. Build the final HTML string (insert all user-input values)
+    // 1) Generate final HTML code (does NOT automatically save to Sheets)
     function generateCode() {
-      const generatedCode = 
+      const generatedCode =
 `<div>
 <div class="artists-left">
 <h1><strong>${document.getElementById("companyName").value}</strong></h1>
@@ -181,14 +186,17 @@ ${document.getElementById("eventDescription").value}<br /><br />
 <p>&nbsp;</p>
 <p>&nbsp;</p>`;
 
-      // Display the generated HTML in <pre id="output">
+      // Show the code in <pre>
       document.getElementById("output").textContent = generatedCode;
+      return generatedCode;
     }
 
-    // 3. Submit data to your doPost(e) function in Apps Script
-    function submitData() {
-      // Grab all user input as a single object
-      // (Feel free to gather only the fields you want)
+    // 2) Gather all fields into a single object (plus the generated code)
+    function buildPayload() {
+      const generatedHTML = document.getElementById("output").textContent; 
+      // If code is not yet generated, we can call generateCode() first. 
+      // Or just rely on what's in <pre>.
+      
       const userInputData = {
         companyName:      document.getElementById("companyName").value,
         artistCountry:    document.getElementById("artistCountry").value,
@@ -225,39 +233,48 @@ ${document.getElementById("eventDescription").value}<br /><br />
         sharedBill:       document.getElementById("sharedBill").value
       };
 
-      // Also grab the final generated HTML from <pre id="output">
-      const generatedHTML = document.getElementById("output").textContent;
-
-      // Build our JSON payload (matches doPost(e) structure)
       const payload = {
         userInput: userInputData,
         generatedCode: generatedHTML
       };
+      return payload;
+    }
 
-      // Send to Apps Script using fetch + JSON
+    // 3) Actually submit to your Google Sheets via doPost(e)
+    function submitData() {
+      const payload = buildPayload();
+
       fetch(webAppUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       })
       .then(response => response.text())
       .then(data => {
         console.log("Google Sheets response:", data);
-        alert("Data submitted to Google Sheets: " + data);
+        alert("Data appended to Google Sheet: " + data);
       })
       .catch(error => {
         console.error("Error:", error);
+        alert("Error while saving to Google Sheets:\n" + error);
       });
     }
 
-    // 4. Copy the generated code from <pre> to clipboard
+    // 4) A combined function: Generate code first, then submit to Sheets
+    function generateAndSave() {
+      // 1) Generate code
+      generateCode(); 
+      // 2) Then immediately save to sheet
+      submitData();
+    }
+
+    // 5) Copy the generated code from <pre> to clipboard
     function copyToClipboard() {
       const textToCopy = document.getElementById("output").textContent;
       navigator.clipboard.writeText(textToCopy)
         .then(() => { alert("Copied to clipboard!"); })
-        .catch((err) => { console.error("Failed to copy:", err); });
+        .catch(err => console.error("Failed to copy: ", err));
     }
   </script>
-
 </body>
 </html>
