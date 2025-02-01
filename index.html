@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Source Code Generator</title>
 </head>
 <body>
 
   <h2>Fill in the details:</h2>
+
   <!-- Your input fields -->
   <label>Company Name:</label>
   <input type="text" id="companyName"><br>
@@ -108,17 +109,18 @@
   <label>Shared Bill (yes/no):</label>
   <input type="text" id="sharedBill"><br><br>
 
-  <!-- You can trigger both generateCode() and submitData() in your button -->
+  <!-- Buttons to trigger generation and copy -->
   <button onclick="generateCode(); submitData();">Generate & Save</button>
   <button onclick="copyToClipboard()">Copy</button>
 
-  <!-- This is where the generated code will appear -->
+  <!-- Where the generated HTML appears -->
   <pre id="output"></pre>
 
-  <!-- The script for generating code and sending data to Google Sheets -->
   <script>
-    const webAppUrl = "https://script.google.com/macros/s/AKfycbxdaDPvwSKi_NYwJzS5HTOatU3RXyrK9CwlXKt0gI31IFpFn0k35xesBvsLg950by-Kog/exec";  // <-- We keep this exactly as is
+    // Keeping your Web App URL for Google Sheets
+    const webAppUrl = "https://script.google.com/macros/s/AKfycbxdaDPvwSKi_NYwJzS5HTOatU3RXyrK9CwlXKt0gI31IFpFn0k35xesBvsLg950by-Kog/exec";
 
+    // Generate the final code with all placeholders replaced
     function generateCode() {
       var generatedCode = 
 `<div>
@@ -139,10 +141,12 @@ For the best deals, see multiple shows with a discount Festival Pass.<br />
 <strong><a class="submit-button" rel="noopener noreferrer" href="${document.getElementById("festivalPassLink").value}">FESTIVAL PASS</a></strong></p>
 <p><br /><strong>Funding Credits:</strong> ${document.getElementById("artistFundCredit").value}</p>
 <h3>Artist Information</h3>
-<p class="p1"><strong>${document.getElementById("artist1Skill").value}:</strong> ${document.getElementById("artist1Name").value}<br />
+<p class="p1">
+<strong>${document.getElementById("artist1Skill").value}:</strong> ${document.getElementById("artist1Name").value}<br />
 <strong>${document.getElementById("artist2Skill").value}:</strong> ${document.getElementById("artist2Name").value}<br />
 <strong>${document.getElementById("artist3Skill").value}:</strong> ${document.getElementById("artist3Name").value}<br />
-<strong>${document.getElementById("artist4Skill").value}:</strong> ${document.getElementById("artist4Name").value}</p>
+<strong>${document.getElementById("artist4Skill").value}:</strong> ${document.getElementById("artist4Name").value}
+</p>
 <h3>Artist Website</h3>
 <p><a rel="noopener" href="${document.getElementById("artistWebsite").value}" target="_blank">Visit Artist Website</a></p>
 <h3>Social Media Accounts</h3>
@@ -166,7 +170,8 @@ ${document.getElementById("eventDescription").value}<br /><br />
 <strong>${document.getElementById("artist1Name").value}<br /></strong>${document.getElementById("artist1Desc").value}<br /><br />
 <strong>${document.getElementById("artist2Name").value}<br /></strong>${document.getElementById("artist2Desc").value}<br /><br />
 <strong>${document.getElementById("artist3Name").value}<br /></strong>${document.getElementById("artist3Desc").value}<br /><br />
-<strong>${document.getElementById("artist4Name").value}<br /></strong>${document.getElementById("artist4Desc").value}</p>
+<strong>${document.getElementById("artist4Name").value}<br /></strong>${document.getElementById("artist4Desc").value}
+</p>
 <p><br />Extra Information Section:<br />${document.getElementById("sharedBill").value}</p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -179,19 +184,20 @@ ${document.getElementById("eventDescription").value}<br /><br />
       document.getElementById("output").textContent = generatedCode;
     }
 
-    // Keep or adapt this function for your Google Sheets submission
+    // Use this if you'd like to save data to Google Sheets
     function submitData() {
-      For example:
-      const formData = new FormData();
-      formData.append("companyName", document.getElementById("companyName").value);
-      ... append more form data ...
-      fetch(webAppUrl, { method: "POST", body: formData })
-        .then((response) => response.text())
-        .then((data) => console.log("Google Sheets response:", data))
-        .catch((error) => console.error("Error:", error));
+      // You can fill in your Google Sheets code here:
+      // e.g.,
+      // const formData = new FormData();
+      // formData.append("companyName", document.getElementById("companyName").value);
+      // ... (append all other fields) ...
+      // fetch(webAppUrl, { method: "POST", body: formData })
+      //   .then(response => response.text())
+      //   .then(data => console.log("Google Sheets response:", data))
+      //   .catch(error => console.error("Error:", error));
     }
 
-    // Simple copy-to-clipboard helper
+    // Copy the generated code from the <pre> to clipboard
     function copyToClipboard() {
       const textToCopy = document.getElementById("output").textContent;
       navigator.clipboard.writeText(textToCopy)
