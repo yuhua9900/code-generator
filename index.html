@@ -109,54 +109,30 @@
   <label>Shared Bill (yes/no):</label>
   <input type="text" id="sharedBill"><br><br>
 
-  <!-- Button 1: Generate & Save (combined) -->
+  <!-- Buttons -->
+  <!-- 1. Generate code, then immediately submit to the sheet -->
   <button onclick="generateAndSave()">Generate & Save</button>
 
-  <!-- Button 2: Save to Excel Sheet only (no new generation) -->
+  <!-- 2. Save to sheet only, without regenerating code -->
   <button onclick="submitData()">Save to Excel Sheet</button>
 
-  <!-- Copy the generated HTML -->
+  <!-- 3. Copy the generated HTML -->
   <button onclick="copyToClipboard()">Copy</button>
 
-  <!-- Display the final HTML here -->
+  <!-- The final code displays here -->
   <pre id="output"></pre>
 
   <script>
-    
-    //   IMPORTANT: Your server-side Apps Script must return CORS headers, e.g.:
-    //     Access-Control-Allow-Origin: *
-    //     Access-Control-Allow-Methods: POST, GET, OPTIONS
-    //     Access-Control-Allow-Headers: Content-Type
-    //   Example snippet in Apps Script:
+    /*
+      IMPORTANT: You must ensure your Apps Script
+      is deployed with CORS headers, as shown in the doPost/doOptions
+      and createCorsResponse() function definitions below.
+    */
 
-      function doPost(e) {
-        var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-        var data = JSON.parse(e.postData.contents);
-        sheet.appendRow([
-          new Date(),
-          JSON.stringify(data.userInput),
-          data.generatedCode
-        ]);
-        return createCorsResponse("Success");
-      }
-
-      function doOptions(e) {
-        return createCorsResponse(""); // handle preflight
-      }
-
-      function createCorsResponse(content) {
-        return ContentService.createTextOutput(content)
-          .setMimeType(ContentService.MimeType.TEXT)
-          .setHeader("Access-Control-Allow-Origin", "*")
-          .setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-          .setHeader("Access-Control-Allow-Headers", "Content-Type");
-      }
-    
-
-    // Your Google Apps Script Web App URL
+    // 1) Your Google Apps Script Web App URL
     const webAppUrl = "https://script.google.com/macros/s/AKfycbxdaDPvwSKi_NYwJzS5HTOatU3RXyrK9CwlXKt0gI31IFpFn0k35xesBvsLg950by-Kog/exec";
 
-    // Builds the HTML with placeholders replaced by user input
+    // 2) Builds the HTML with placeholders replaced by user input
     function generateCode() {
       const generatedCode =
 `<div>
@@ -217,12 +193,11 @@ ${document.getElementById("eventDescription").value}<br /><br />
 <p>&nbsp;</p>
 <p>&nbsp;</p>`;
 
-      // Display the generated HTML in the <pre> block
       document.getElementById("output").textContent = generatedCode;
       return generatedCode;
     }
 
-    // Build the JSON payload: user input and the generated code from <pre>
+    // 3) Build the JSON payload: user input and the generated code
     function buildPayload() {
       const generatedHTML = document.getElementById("output").textContent;
 
@@ -268,14 +243,13 @@ ${document.getElementById("eventDescription").value}<br /><br />
       };
     }
 
-    // Send data to Google Sheets (CORS must be enabled on the Apps Script side)
+    // 4) Send data to Google Sheets
     function submitData() {
       const payload = buildPayload();
 
       fetch(webAppUrl, {
         method: "POST",
-        // Key addition for CORS:
-        mode: "cors",
+        mode: "cors", // IMPORTANT for cross-origin calls
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       })
@@ -290,18 +264,18 @@ ${document.getElementById("eventDescription").value}<br /><br />
       });
     }
 
-    // Generate code then immediately submit (combined action)
+    // 5) Generate code, then immediately submit
     function generateAndSave() {
-      generateCode(); 
+      generateCode();
       submitData();
     }
 
-    // Copy the generated code (from <pre>) to the clipboard
+    // 6) Copy the generated code from <pre> to the clipboard
     function copyToClipboard() {
       const textToCopy = document.getElementById("output").textContent;
       navigator.clipboard.writeText(textToCopy)
         .then(() => alert("Copied to clipboard!"))
-        .catch(err => console.error("Failed to copy: ", err));
+        .catch(err => console.error("Failed to copy:", err));
     }
   </script>
 </body>
