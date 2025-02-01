@@ -114,7 +114,7 @@
     <pre id="output"></pre>
 
     <script>
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbz343gL4c-GbKT8Afq38-rIP4h0nYwhh2jxnOFalHch-rANr70w1-UPVrANJ6bC2IiZ/exec";
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbz343gL4c-GbKT8Afq38-rIP4h0nYwhh2jxnOFalHch-rANr70w1-UPVrANJ6bC2IiZ/exec";  // Replace with your actual Web App URL
 
         function generateCode() {
             var generatedCode = `<div>
@@ -143,6 +143,7 @@
 
             fetch(webAppUrl, {
                 method: "POST",
+                mode: "cors",  // Enable CORS
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(userInput)
             })
