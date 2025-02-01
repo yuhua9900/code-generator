@@ -188,13 +188,13 @@ ${document.getElementById("eventDescription").value}<br /><br />
     function submitData() {
       // You can fill in your Google Sheets code here:
       // e.g.,
-      // const formData = new FormData();
-      // formData.append("companyName", document.getElementById("companyName").value);
-      // ... (append all other fields) ...
-      // fetch(webAppUrl, { method: "POST", body: formData })
-      //   .then(response => response.text())
-      //   .then(data => console.log("Google Sheets response:", data))
-      //   .catch(error => console.error("Error:", error));
+      const formData = new FormData();
+      formData.append("companyName", document.getElementById("companyName").value);
+      ... (append all other fields) ...
+      fetch(webAppUrl, { method: "POST", body: formData })
+        .then(response => response.text())
+        .then(data => console.log("Google Sheets response:", data))
+        .catch(error => console.error("Error:", error));
     }
 
     // Copy the generated code from the <pre> to clipboard
