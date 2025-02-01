@@ -122,12 +122,12 @@
   <pre id="output"></pre>
 
   <script>
-    /*
-      IMPORTANT: Your server-side Apps Script must return CORS headers, e.g.:
-        Access-Control-Allow-Origin: *
-        Access-Control-Allow-Methods: POST, GET, OPTIONS
-        Access-Control-Allow-Headers: Content-Type
-      Example snippet in Apps Script:
+    
+    //   IMPORTANT: Your server-side Apps Script must return CORS headers, e.g.:
+    //     Access-Control-Allow-Origin: *
+    //     Access-Control-Allow-Methods: POST, GET, OPTIONS
+    //     Access-Control-Allow-Headers: Content-Type
+    //   Example snippet in Apps Script:
 
       function doPost(e) {
         var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -151,7 +151,7 @@
           .setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
           .setHeader("Access-Control-Allow-Headers", "Content-Type");
       }
-    */
+    
 
     // Your Google Apps Script Web App URL
     const webAppUrl = "https://script.google.com/macros/s/AKfycbxdaDPvwSKi_NYwJzS5HTOatU3RXyrK9CwlXKt0gI31IFpFn0k35xesBvsLg950by-Kog/exec";
