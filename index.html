@@ -1,14 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Source Code Generator</title>
 </head>
 <body>
 
   <h2>Fill in the details:</h2>
-
   <!-- Your input fields -->
   <label>Company Name:</label>
   <input type="text" id="companyName"><br>
@@ -109,20 +108,21 @@
   <label>Shared Bill (yes/no):</label>
   <input type="text" id="sharedBill"><br><br>
 
-  <!-- Buttons to trigger generation and copy -->
+  <!-- Generate final HTML and also submit to Google Sheets -->
   <button onclick="generateCode(); submitData();">Generate & Save</button>
+  <!-- Copy the generated HTML directly from the <pre> -->
   <button onclick="copyToClipboard()">Copy</button>
 
-  <!-- Where the generated HTML appears -->
+  <!-- Display the final HTML code here -->
   <pre id="output"></pre>
 
   <script>
-    // Keeping your Web App URL for Google Sheets
+    // 1. Your Google Apps Script Web App URL:
     const webAppUrl = "https://script.google.com/macros/s/AKfycbxdaDPvwSKi_NYwJzS5HTOatU3RXyrK9CwlXKt0gI31IFpFn0k35xesBvsLg950by-Kog/exec";
 
-    // Generate the final code with all placeholders replaced
+    // 2. Build the final HTML string (insert all user-input values)
     function generateCode() {
-      var generatedCode = 
+      const generatedCode = 
 `<div>
 <div class="artists-left">
 <h1><strong>${document.getElementById("companyName").value}</strong></h1>
@@ -181,29 +181,83 @@ ${document.getElementById("eventDescription").value}<br /><br />
 <p>&nbsp;</p>
 <p>&nbsp;</p>`;
 
+      // Display the generated HTML in <pre id="output">
       document.getElementById("output").textContent = generatedCode;
     }
 
-    // Use this if you'd like to save data to Google Sheets
+    // 3. Submit data to your doPost(e) function in Apps Script
     function submitData() {
-      // You can fill in your Google Sheets code here:
-      // e.g.,
-      const formData = new FormData();
-      formData.append("companyName", document.getElementById("companyName").value);
-      ... (append all other fields) ...
-      fetch(webAppUrl, { method: "POST", body: formData })
-        .then(response => response.text())
-        .then(data => console.log("Google Sheets response:", data))
-        .catch(error => console.error("Error:", error));
+      // Grab all user input as a single object
+      // (Feel free to gather only the fields you want)
+      const userInputData = {
+        companyName:      document.getElementById("companyName").value,
+        artistCountry:    document.getElementById("artistCountry").value,
+        eventTitle:       document.getElementById("eventTitle").value,
+        yearCreated:      document.getElementById("yearCreated").value,
+        premiereType:     document.getElementById("premiereType").value,
+        videoLink:        document.getElementById("videoLink").value,
+        eventDateTime:    document.getElementById("eventDateTime").value,
+        eventDuration:    document.getElementById("eventDuration").value,
+        intermission:     document.getElementById("intermission").value,
+        venue:            document.getElementById("venue").value,
+        venueLocation:    document.getElementById("venueLocation").value,
+        ticketLink:       document.getElementById("ticketLink").value,
+        festivalPassLink: document.getElementById("festivalPassLink").value,
+        artistFundCredit: document.getElementById("artistFundCredit").value,
+        artist1Skill:     document.getElementById("artist1Skill").value,
+        artist1Name:      document.getElementById("artist1Name").value,
+        artist2Skill:     document.getElementById("artist2Skill").value,
+        artist2Name:      document.getElementById("artist2Name").value,
+        artist3Skill:     document.getElementById("artist3Skill").value,
+        artist3Name:      document.getElementById("artist3Name").value,
+        artist4Skill:     document.getElementById("artist4Skill").value,
+        artist4Name:      document.getElementById("artist4Name").value,
+        artistWebsite:    document.getElementById("artistWebsite").value,
+        artistFacebook:   document.getElementById("artistFacebook").value,
+        artistInstagram:  document.getElementById("artistInstagram").value,
+        artistTwitter:    document.getElementById("artistTwitter").value,
+        eventDescription: document.getElementById("eventDescription").value,
+        companyHistory:   document.getElementById("companyHistory").value,
+        artist1Desc:      document.getElementById("artist1Desc").value,
+        artist2Desc:      document.getElementById("artist2Desc").value,
+        artist3Desc:      document.getElementById("artist3Desc").value,
+        artist4Desc:      document.getElementById("artist4Desc").value,
+        sharedBill:       document.getElementById("sharedBill").value
+      };
+
+      // Also grab the final generated HTML from <pre id="output">
+      const generatedHTML = document.getElementById("output").textContent;
+
+      // Build our JSON payload (matches doPost(e) structure)
+      const payload = {
+        userInput: userInputData,
+        generatedCode: generatedHTML
+      };
+
+      // Send to Apps Script using fetch + JSON
+      fetch(webAppUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.text())
+      .then(data => {
+        console.log("Google Sheets response:", data);
+        alert("Data submitted to Google Sheets: " + data);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
     }
 
-    // Copy the generated code from the <pre> to clipboard
+    // 4. Copy the generated code from <pre> to clipboard
     function copyToClipboard() {
       const textToCopy = document.getElementById("output").textContent;
       navigator.clipboard.writeText(textToCopy)
         .then(() => { alert("Copied to clipboard!"); })
-        .catch((err) => { console.error("Failed to copy: ", err); });
+        .catch((err) => { console.error("Failed to copy:", err); });
     }
   </script>
+
 </body>
 </html>
